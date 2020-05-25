@@ -7,7 +7,7 @@ import {CurrentUserContext} from '../../contexts/currentUser'
 
 const CreateArticle = () => {
   const apiUrl = '/articles'
-  const [isSuccessfullSubmit, setIsSuccessfullSubmit] = useState(false)
+  const [isSuccessfulSubmit, setIsSuccessfulSubmit] = useState(false)
   const [{response, error}, doFetch] = useFetch(apiUrl)
   const [currentUserState] = useContext(CurrentUserContext)
 
@@ -30,14 +30,14 @@ const CreateArticle = () => {
     if (!response) {
       return
     }
-    setIsSuccessfullSubmit(true)
+    setIsSuccessfulSubmit(true)
   }, [response])
 
   if (currentUserState.isLoggedIn === null) {
     return null
   }
 
-  if (isSuccessfullSubmit || currentUserState.isLoggedIn === false) {
+  if (isSuccessfulSubmit || currentUserState.isLoggedIn === false) {
     return <Redirect to="/" />
   }
 

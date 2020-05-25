@@ -2,7 +2,7 @@ import React, {useEffect, Fragment} from 'react'
 import {stringify} from 'query-string'
 
 import Feed from '../../components/feed'
-import useFetch from '../../hooks/useFetch'
+import useFetch from '../../hooks/useFetch2'
 import Pagination from '../../components/pagination'
 import {getPaginator, limit} from '../../utils'
 import PopularTags from '../../components/popularTags'
@@ -19,7 +19,7 @@ const GlobalFeed = ({location, match}) => {
   })
   const apiUrl = `/articles?${stringifiedParams}`
   const currentUrl = match.url
-  const [{response, error, isLoading}, doFetch] = useFetch(apiUrl)
+  const [result, doFetch] = useFetch(apiUrl)
 
   useEffect(() => {
     doFetch()
@@ -32,13 +32,13 @@ const GlobalFeed = ({location, match}) => {
         <div className="row">
           <div className="col-md-9">
             <FeedToggler />
-            {isLoading && <Loading />}
-            {error && <ErrorMessage />}
-            {!isLoading && response && (
+            {result.isLoading && <Loading />}
+            {result.error && <ErrorMessage />}
+            {!result.isLoading && result.response && (
               <Fragment>
-                <Feed articles={response.articles} />
+                <Feed articles={result.response.articles} />
                 <Pagination
-                  total={response.articlesCount}
+                  total={result.response.articlesCount}
                   limit={limit}
                   url={currentUrl}
                   currentPage={currentPage}
