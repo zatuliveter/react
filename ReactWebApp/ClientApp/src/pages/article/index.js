@@ -7,31 +7,26 @@ import ErrorMessage from '../../components/errorMessage'
 import TagList from '../../components/tagList'
 import {CurrentUserContext} from '../../contexts/currentUser'
 
-export default (props) => {
+export default props => {
   const slug = props.match.params.slug
   const apiUrl = `/articles/${slug}`
   
   const [fetch, doFetch] = useFetch(apiUrl)
 
-  const [{response: deleteArticleResponse}, doDeleteArticle] = useFetch(apiUrl)
+  const [deleteFetch, doDelete] = useFetch(apiUrl)
   const [currentUserState] = useContext(CurrentUserContext)
-  const [isSuccessfullDelete, setIsSuccessfullDelete] = useState(false)
   
   const isAuthor = () => {
-    
-    console.log("fetch:", fetch);
-    
     if (currentUserState.isLoggedIn === false || fetch.isSuccess === false) {
       return false
     }
-    
     return (
       currentUserState.currentUser.username === fetch.response.article.author.username
     )
   }
 
   const deleteArticle = () => {
-    doDeleteArticle({
+    doDelete({
       method: 'delete'
     })
   }
@@ -39,16 +34,8 @@ export default (props) => {
   useEffect(() => {
     doFetch()
   }, [doFetch])
-
-  useEffect(() => {
-    if (!deleteArticleResponse) {
-      return
-    }
-
-    setIsSuccessfullDelete(true)
-  }, [deleteArticleResponse])
-
-  if (isSuccessfullDelete) {
+  
+  if (deleteFetch.isSuccess) {
     return <Redirect to="/" />
   }
 
