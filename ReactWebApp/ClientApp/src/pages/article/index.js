@@ -1,35 +1,32 @@
 import React, {useEffect, useContext, useState} from 'react'
 import {Link, Redirect} from 'react-router-dom'
 
-import useFetch from '../../hooks/useFetch'
+import useFetch from '../../hooks/useFetch2'
 import Loading from '../../components/loading'
 import ErrorMessage from '../../components/errorMessage'
 import TagList from '../../components/tagList'
 import {CurrentUserContext} from '../../contexts/currentUser'
 
-const Article = props => {
+export default (props) => {
   const slug = props.match.params.slug
   const apiUrl = `/articles/${slug}`
-  const [
-    {
-      response: fetchArticleResponse,
-      error: fetchArticleError,
-      isLoading: fetchArticleIsLoading
-    },
-    doFetch
-  ] = useFetch(apiUrl)
+  
+  const [fetch, doFetch] = useFetch(apiUrl)
+
   const [{response: deleteArticleResponse}, doDeleteArticle] = useFetch(apiUrl)
   const [currentUserState] = useContext(CurrentUserContext)
   const [isSuccessfullDelete, setIsSuccessfullDelete] = useState(false)
-
+  
   const isAuthor = () => {
-    if (currentUserState.isLoggedIn === null || !fetchArticleResponse) {
+    
+    console.log("fetch:", fetch);
+    
+    if (currentUserState.isLoggedIn === false || fetch.isSuccess === false) {
       return false
     }
-
+    
     return (
-      currentUserState.currentUser.username ===
-      fetchArticleResponse.article.author.username
+      currentUserState.currentUser.username === fetch.response.article.author.username
     )
   }
 
@@ -38,7 +35,7 @@ const Article = props => {
       method: 'delete'
     })
   }
-
+  
   useEffect(() => {
     doFetch()
   }, [doFetch])
@@ -58,29 +55,29 @@ const Article = props => {
   return (
     <div className="article-page">
       <div className="banner">
-        {!fetchArticleIsLoading && fetchArticleResponse && (
+        {fetch.isSuccess === true && (
           <div className="container">
-            <h1>{fetchArticleResponse.article.title}</h1>
+            <h1>{fetch.response.article.title}</h1>
             <div className="article-meta">
               <Link
-                to={`/profiles/${fetchArticleResponse.article.author.username}`}
+                to={`/profiles/${fetch.response.article.author.username}`}
               >
-                <img src={fetchArticleResponse.article.author.image} alt="" />
+                <img src={fetch.response.article.author.image} alt="" />
               </Link>
               <div className="info">
                 <Link
-                  to={`/profiles/${fetchArticleResponse.article.author.username}`}
+                  to={`/profiles/${fetch.response.article.author.username}`}
                 >
-                  {fetchArticleResponse.article.author.username}
+                  {fetch.response.article.author.username}
                 </Link>
                 <span className="date">
-                  {fetchArticleResponse.article.createdAt}
+                  {fetch.response.article.createdAt}
                 </span>
               </div>
-              {isAuthor() && (
+              { isAuthor() && (
                 <span>
                   <Link
-                    to={`/articles/${fetchArticleResponse.article.slug}/edit`}
+                    to={`/articles/${fetch.response.article.slug}/edit`}
                     className="btn btn-outline-secondary btn-sm"
                   >
                     <i className="ion-edit"></i>
@@ -100,14 +97,14 @@ const Article = props => {
         )}
       </div>
       <div className="container page">
-        {fetchArticleIsLoading && <Loading />}
-        {fetchArticleError && <ErrorMessage />}
-        {!fetchArticleIsLoading && fetchArticleResponse && (
+        <Loading isLoading={fetch.isLoading}/>
+        <ErrorMessage error={fetch.error}/>
+        {fetch.isSuccess && (
           <div className="row article-content">
             <div>
-              <p>{fetchArticleResponse.article.body}</p>
+              <p>{fetch.response.article.body}</p>
             </div>
-            <TagList tags={fetchArticleResponse.article.tagList} />
+            <TagList tags={fetch.response.article.tagList} />
           </div>
         )}
         <hr />
@@ -115,5 +112,3 @@ const Article = props => {
     </div>
   )
 }
-
-export default Article

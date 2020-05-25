@@ -9,7 +9,7 @@ export default url => {
   const [result, setResult] = useState({
     isLoading: false,
     isCompleted: false,
-    isSuccess: null,
+    isSuccess: false,
     response: null,
     error: null
   })
@@ -22,7 +22,7 @@ export default url => {
     setResult({
       isLoading: true,
       isCompleted: false,
-      isSuccess: null,
+      isSuccess: false,
       response: null,
       error: null
     });
@@ -47,7 +47,6 @@ export default url => {
       .then(res => {
         if (!isDestroyed) {
           setResult({
-             ...result, 
              isLoading: false, 
              isCompleted: true, 
              isSuccess: true,
@@ -59,7 +58,6 @@ export default url => {
       .catch(err => {
         if (!isDestroyed) {
           setResult({
-             ...result, 
              isLoading: false, 
              isCompleted: true,
              isSuccess: false,
