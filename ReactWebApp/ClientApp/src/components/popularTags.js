@@ -1,37 +1,32 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, Fragment} from 'react'
 import {Link} from 'react-router-dom'
 
-import useFetch from '../hooks/useFetch'
+import useFetch from '../hooks/useFetch2'
 import ErrorMessage from './errorMessage'
 import Loading from './loading'
 
-const PopularTags = () => {
-  const [{response, isLoading, error}, doFetch] = useFetch('/tags')
+export default () => {
+  const [fetch, doFetch] = useFetch('/tags')
 
-  useEffect(() => {
-    doFetch()
-  }, [doFetch])
-
-  if (isLoading || !response) {
-    return <Loading />
-  }
-
-  if (error) {
-    return <ErrorMessage />
-  }
-
+  useEffect(() => doFetch(), [doFetch])
+  
   return (
-    <div className="sidebar">
-      <p>Popular tags</p>
-      <div className="tag-list">
-        {response.tags.map(tag => (
-          <Link to={`/tags/${tag}`} className="tag-default tag-pill" key={tag}>
-            {tag}
-          </Link>
-        ))}
-      </div>
-    </div>
+    <Fragment>
+      <Loading isLoading={fetch.isLoading}/>
+      <ErrorMessage error={fetch.error}/>
+      { fetch.isSuccess && (
+        <div className="sidebar">
+          <p>Popular tags</p>
+          <div className="tag-list">
+            {fetch.response.tags.map(tag => (
+              <Link to={`/tags/${tag}`} className="tag-default tag-pill" key={tag}>
+                {tag}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </Fragment>
   )
 }
 
-export default PopularTags

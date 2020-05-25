@@ -1,7 +1,11 @@
 import React from 'react'
 
-const Loading = () => {
-  return <div>Loading...</div>
+const Loading = ({isLoading}) => {
+
+  if (isLoading === true)
+    return <div>Loading...</div>
+  else
+    return null;
 }
 
 export default Loading

@@ -6,13 +6,10 @@ import useLocalStorage from './useLocalStorage'
 export default url => {
   const baseUrl = 'https://conduit.productionready.io/api'
   
-  //const [isLoading, setIsLoading] = useState(false)
-  //const [response, setResponse] = useState(null)
-  //const [error, setError] = useState(null)
-  
   const [result, setResult] = useState({
     isLoading: false,
     isCompleted: false,
+    isSuccess: null,
     response: null,
     error: null
   })
@@ -25,13 +22,14 @@ export default url => {
     setResult({
       isLoading: true,
       isCompleted: false,
+      isSuccess: null,
       response: null,
       error: null
     });
   }, [])
 
   useEffect(() => {
-    let skipGetResponseAfterDestroy = false
+    let isDestroyed = false
     if (!result.isLoading) {
       return
     }
@@ -47,21 +45,31 @@ export default url => {
 
     axios(baseUrl + url, requestOptions)
       .then(res => {
-        if (!skipGetResponseAfterDestroy) {
-          setResult({ ...result, isLoading: false, isCompleted: true, response: res.data, error: null });
-          //setResponse(res.data)
-          //setIsLoading(false)
+        if (!isDestroyed) {
+          setResult({
+             ...result, 
+             isLoading: false, 
+             isCompleted: true, 
+             isSuccess: true,
+             response: res.data, 
+             error: null
+          })
         }
       })
       .catch(err => {
-        if (!skipGetResponseAfterDestroy) {
-          setResult({ ...result, isLoading: false, isCompleted: true, response: null, error: err.response.data });
-          //setError(err.response.data)
-          //setIsLoading(false)
+        if (!isDestroyed) {
+          setResult({
+             ...result, 
+             isLoading: false, 
+             isCompleted: true,
+             isSuccess: false,
+             response: null, 
+             error: err.response.data
+          });
         }
       })
     return () => {
-      skipGetResponseAfterDestroy = true
+      isDestroyed = true
     }
   }, [result, url, options, token])
 

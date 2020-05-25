@@ -13,13 +13,13 @@ import Banner from '../../components/banner'
 
 const GlobalFeed = ({location, match}) => {
   const {offset, currentPage} = getPaginator(location.search)
-  const stringifiedParams = stringify({
+  const params = stringify({
     limit,
     offset
   })
-  const apiUrl = `/articles?${stringifiedParams}`
+  const apiUrl = `/articles?${params}`
   const currentUrl = match.url
-  const [result, doFetch] = useFetch(apiUrl)
+  const [fetch, doFetch] = useFetch(apiUrl)
 
   useEffect(() => {
     doFetch()
@@ -32,13 +32,13 @@ const GlobalFeed = ({location, match}) => {
         <div className="row">
           <div className="col-md-9">
             <FeedToggler />
-            {result.isLoading && <Loading />}
-            {result.error && <ErrorMessage />}
-            {!result.isLoading && result.response && (
+            <Loading isLoading={fetch.isLoading} />
+            <ErrorMessage error={fetch.error} />
+            {fetch.isSuccess && (
               <Fragment>
-                <Feed articles={result.response.articles} />
+                <Feed articles={fetch.response.articles} />
                 <Pagination
-                  total={result.response.articlesCount}
+                  total={fetch.response.articlesCount}
                   limit={limit}
                   url={currentUrl}
                   currentPage={currentPage}
