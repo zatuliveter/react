@@ -2,7 +2,7 @@ import React, {useEffect, Fragment} from 'react'
 import {stringify} from 'query-string'
 
 import Feed from '../../components/feed'
-import useFetch from '../../hooks/useFetch2'
+import useFetch from '../../hooks/useFetch'
 import Pagination from '../../components/pagination'
 import {getPaginator, limit} from '../../utils'
 import PopularTags from '../../components/popularTags'
@@ -11,7 +11,7 @@ import ErrorMessage from '../../components/errorMessage'
 import FeedToggler from '../../components/feedToggler'
 import Banner from '../../components/banner'
 
-const GlobalFeed = ({location, match}) => {
+export default ({location, match}) => {
   const {offset, currentPage} = getPaginator(location.search)
   const params = stringify({
     limit,
@@ -33,7 +33,7 @@ const GlobalFeed = ({location, match}) => {
           <div className="col-md-9">
             <FeedToggler />
             <Loading isLoading={fetch.isLoading} />
-            <ErrorMessage error={fetch.isError} />
+            <ErrorMessage isError={fetch.isError} />
             {fetch.isSuccess && (
               <Fragment>
                 <Feed articles={fetch.response.articles} />
@@ -54,5 +54,3 @@ const GlobalFeed = ({location, match}) => {
     </div>
   )
 }
-
-export default GlobalFeed

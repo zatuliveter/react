@@ -1,17 +1,17 @@
 import React from 'react'
 
-const ErrorMessage = ({error}) => {
+export default ({isError, errors}) => {
   
-  if (!error) return null
+  if (!isError) return null
   
   return (
     <div>
       <h4>Something bad happened...</h4>
-      <div>
-        {error}
-      </div>
+      { errors && (
+        <div>
+          {errors}
+        </div>
+      )}
     </div>
   )
 }
-
-export default ErrorMessage

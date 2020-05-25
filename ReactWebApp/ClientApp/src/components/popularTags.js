@@ -1,7 +1,7 @@
 import React, {useEffect, Fragment} from 'react'
 import {Link} from 'react-router-dom'
 
-import useFetch from '../hooks/useFetch2'
+import useFetch from '../hooks/useFetch'
 import ErrorMessage from './errorMessage'
 import Loading from './loading'
 

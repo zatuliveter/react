@@ -12,22 +12,22 @@ import FeedToggler from '../../components/feedToggler'
 import Banner from '../../components/banner'
 
 const TagFeed = ({location, match}) => {
+    
   const tagName = match.params.slug
-  console.log('tagName', tagName)
   const {offset, currentPage} = getPaginator(location.search)
-  const stringifiedParams = stringify({
+  const params = stringify({
     limit,
     offset,
     tag: tagName
   })
-  const apiUrl = `/articles?${stringifiedParams}`
+  const apiUrl = `/articles?${params}`
   const currentUrl = match.url
-  const [{response, error, isLoading}, doFetch] = useFetch(apiUrl)
+  const [fetch, doFetch] = useFetch(apiUrl)
 
   useEffect(() => {
     doFetch()
-  }, [currentPage, doFetch])
-
+  }, [tagName, currentPage, doFetch])
+  
   return (
     <div className="home-page">
       <Banner />
@@ -35,13 +35,13 @@ const TagFeed = ({location, match}) => {
         <div className="row">
           <div className="col-md-9">
             <FeedToggler tagName={tagName} />
-            {isLoading && <Loading />}
-            {error && <ErrorMessage />}
-            {!isLoading && response && (
+            <Loading isLoading={fetch.isLoading} />
+            <ErrorMessage isError={fetch.isError}/>
+            {fetch.isSuccess === true && (
               <Fragment>
-                <Feed articles={response.articles} />
+                <Feed articles={fetch.response.articles} />
                 <Pagination
-                  total={response.articlesCount}
+                  total={fetch.response.articlesCount}
                   limit={limit}
                   url={currentUrl}
                   currentPage={currentPage}

@@ -1,7 +1,7 @@
-import React, {useEffect, useContext, useState} from 'react'
+import React, {useEffect, useContext} from 'react'
 import {Link, Redirect} from 'react-router-dom'
 
-import useFetch from '../../hooks/useFetch2'
+import useFetch from '../../hooks/useFetch'
 import Loading from '../../components/loading'
 import ErrorMessage from '../../components/errorMessage'
 import TagList from '../../components/tagList'
