@@ -33,7 +33,7 @@ const GlobalFeed = ({location, match}) => {
           <div className="col-md-9">
             <FeedToggler />
             <Loading isLoading={fetch.isLoading} />
-            <ErrorMessage error={fetch.error} />
+            <ErrorMessage error={fetch.isError} />
             {fetch.isSuccess && (
               <Fragment>
                 <Feed articles={fetch.response.articles} />

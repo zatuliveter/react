@@ -5,11 +5,12 @@ import useLocalStorage from './useLocalStorage'
 
 export default url => {
   const baseUrl = 'https://conduit.productionready.io/api'
-  
+
   const [result, setResult] = useState({
     isLoading: false,
     isCompleted: false,
     isSuccess: false,
+    isError: false,
     response: null,
     error: null
   })
@@ -23,6 +24,7 @@ export default url => {
       isLoading: true,
       isCompleted: false,
       isSuccess: false,
+      isError: false,
       response: null,
       error: null
     });
@@ -50,6 +52,7 @@ export default url => {
              isLoading: false, 
              isCompleted: true, 
              isSuccess: true,
+             isError: false,
              response: res.data, 
              error: null
           })
@@ -61,6 +64,7 @@ export default url => {
              isLoading: false, 
              isCompleted: true,
              isSuccess: false,
+             isError: true,
              response: null, 
              error: err.response.data
           });
